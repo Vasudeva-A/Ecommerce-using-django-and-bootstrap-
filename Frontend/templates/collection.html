@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="container mt-5" style="margin-top:70px">
+    <div class="row">
+        <div class="col-12 text-center mt-5">
+            <h3 class="fw-bold mb-2 text-primary">🛍️ Categories</h3>
+            <hr class="w-25 mx-auto text-secondary">
+        </div>
+
+        {% for item in collections %}
+        <div class="col-md-6 col-lg-4 mt-4 col-xl-3">
+            <div class="card category-card h-100 rounded-3">
+                <a href="{% url 'collectionview' item.name %}" class="text-decoration-none text-dark">
+
+                    <!-- Image -->
+                    <div class="image-wrapper">
+                        <img src="{{ item.image.url }}" alt="{{ item.name }}" 
+                             class="card-img-top rounded-top">
+                    </div>
+
+                    <!-- Body -->
+                    <div class="card-body text-center">
+                        <h5 class="fw-bold text-dark">{{ item.name }}</h5>
+                        <p class="card-text small text-muted">
+                            {{ item.description|truncatewords:7 }}
+                        </p>
+                    </div>
+                </a>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    /* Card Styling */
+    .category-card {
+        border: 1px solid #eaeaea;
+        background: #ffffff;
+        transition: all 0.3s ease-in-out;
+        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        overflow: hidden;
+    }
+
+    /* Hover Effect */
+    .category-card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    /* Image wrapper with zoom */
+    .image-wrapper {
+        overflow: hidden;
+        border-radius: .5rem .5rem 0 0;
+    }
+    .image-wrapper img {
+        height: 220px;
+        width: 100%;
+        object-fit: cover;
+        transition: transform 0.4s ease;
+    }
+    .category-card:hover .image-wrapper img {
+        transform: scale(1.08);
+    }
+</style>
+
+{% endblock content %}

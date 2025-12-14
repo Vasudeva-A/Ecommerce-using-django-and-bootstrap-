@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div class="" style='margin-top:80px'>
+    {% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+      {{ message }}
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endfor %}
+{% endif %}
+</div>
+
+
+<div class="container mt-5">
+    <h3 class="text-dark mb-5"> Orders History</h3>
+    <div class="row">
+               <p> <a href="{% url 'clearall' %}" class='btn btn-outline-success float-start mb-3'>Clear Order history</a></p>
+
+    </div>
+
+    {% for order in orders %}
+
+    <div class="card mb-3  shadow-lg border-primary bg-transparent text-success">
+        <div class="row g-0 align-items-center">
+            <!-- Image -->
+            <div class="col-md-3  text-center">
+                <img src="{{ order.order_products.product_image.url }}" class="img-fluid rounded" style="height:100px; width:100px; object-fit:cover;">
+            </div>
+
+            <!-- Details -->
+            <div class="col-md-9">
+                <div class="card-body">
+                    <a href="{% url 'clear' order.id %}" class='btn btn-light rounded-0 btn-lg fs-2  float-end btn-md'>×</a>
+                    <h5 class="card-title mb-1 text-dark ">{{ order.order_products.name | upper }}</h5>
+                    <p class="mb-1">Quantity: {{ order.order_quantity }}</p>
+                    <p class="mb-1">Total: ₹{{ order.total_price }}</p>
+                    <p class="small text-muted">Ordered on: {{ order.created_at|date:"d M Y H:i" }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}
+
+
+
