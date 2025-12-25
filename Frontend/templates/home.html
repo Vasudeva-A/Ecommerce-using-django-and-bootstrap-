@@ -1,102 +1,116 @@
-{% extends "base.html" %}
-{% load static %}
-
-{% block content %}
-{% include "slider.html" %}
+{% extends "base.html" %} {% load static %} {% block content %} {% include
+"slider.html" %}
 
 <div class="container mt-5">
-    <div class="row">
-        <div class="col-12 text-center">
-            <h3 class="fw-bold mb-2 text-primary">✨ Latest Offers ✨</h3>
-            <hr class="w-25 mx-auto text-secondary">
-        </div>
-
-        {% for item in home %}
-        <div class="col-md-6 col-lg-4 mt-5 col-xl-3">
-            <div class="card product-card h-100">
-                <a href="{% url 'productdetails' item.category.name item.name %}" class="text-decoration-none">
-
-                    <!-- Product Image -->
-                    <img src="{{ item.product_image.url }}" alt="{{ item.name }}"
-                         class="card-img-top rounded-top" style="height: 250px; object-fit: cover;">
-
-                    <!-- Card Body -->
-                    <div class="card-body text-center">
-                        <h5 class="fw-bold text-dark">{{ item.name }}</h5>
-
-                        <!-- Price Section -->
-                        <div class="mt-2">
-                            <span class="text-muted fw-bold me-2">
-                                <s>₹{{ item.original_price|stringformat:'d' }}</s>
-                            </span>
-                            <span class="badge bg-success fs-6">
-                                ₹{{ item.selling_price|stringformat:'d' }}
-                            </span>
-                        </div>
-
-                        <!-- Buttons -->
-                        <div class="d-flex justify-content-center gap-2 mt-3">
-                            <form method="POST" action="{% url 'add_to_cart' item.id %}">
-                                {% csrf_token %}
-                                <button class="btn cart-btn" type="submit">
-                                    <i class="bi bi-cart3"></i> Cart
-                                </button>
-                            </form>
-                            <a href="{% url 'place_order' %}" class="btn order-btn">
-                                <i class="bi bi-bag-check"></i> Order
-                            </a>
-                        </div>
-                    </div>
-                </a>
-            </div>
-        </div>
-        {% endfor %}
+  <div class="row">
+    <div class="col-12 text-center">
+      <h3 class="fw-bold mb-2 text-primary">✨ Latest Offers ✨</h3>
+      <hr class="w-25 mx-auto text-secondary" />
     </div>
+
+    {% for item in home %}
+    <div class="col-md-6 col-lg-4 mt-5 col-xl-3">
+      <div class="card product-card h-100">
+        <!-- Product Image & Title (link to details) -->
+        <a
+          href="{% url 'productdetails' item.category.name item.name %}"
+          class="text-decoration-none"
+        >
+          <img
+            src="{{ item.product_image.url }}"
+            alt="{{ item.name }}"
+            class="card-img-top rounded-top"
+            style="height: 250px; object-fit: cover"
+          />
+        </a>
+
+        <!-- Card Body -->
+        <div class="card-body text-center">
+          <a
+            href="{% url 'productdetails' item.category.name item.name %}"
+            class="text-decoration-none"
+          >
+            <h5 class="fw-bold text-dark">{{ item.name }}</h5>
+          </a>
+
+          <!-- Price Section -->
+          <div class="mt-2">
+            <span class="text-muted fw-bold me-2">
+              <s>₹{{ item.original_price|stringformat:'d' }}</s>
+            </span>
+            <span class="badge bg-success fs-6">
+              ₹{{ item.selling_price|stringformat:'d' }}
+            </span>
+          </div>
+
+          <!-- Buttons -->
+          <div class="d-flex justify-content-center gap-2 mt-3">
+            <form method="POST" action="{% url 'add_to_cart' item.id %}">
+              {% csrf_token %}
+              <button class="btn cart-btn" type="submit">
+                <i class="bi bi-cart3"></i> Cart
+              </button>
+            </form>
+
+            <form method="POST" action="{% url 'place_order' %}">
+              {% csrf_token %}
+              <input type="hidden" name="product_id" value="{{ item.id }}" />
+              <input type="hidden" name="qty" value="1" />
+              <button class="btn order-btn" type="submit">
+                <i class="bi bi-bag-check"></i> Order
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
 </div>
 
 <style>
-    /* Product Cards */
-    .product-card {
-        border: 1px solid #eaeaea;
-        border-radius: 12px;
-        background-color: #ffffff;
-        transition: all 0.3s ease-in-out;
-        box-shadow: 0 2px 6px rgba(0,0,0,0.05);
-    }
-    .product-card:hover {
-        transform: translateY(-6px);
-        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
-    }
+  /* Product Cards */
+  .product-card {
+    border: 1px solid #eaeaea;
+    border-radius: 12px;
+    background-color: #ffffff;
+    transition: all 0.3s ease-in-out;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+  }
+  .product-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+  }
 
-    /* Cart Button */
-    .cart-btn {
-        background: linear-gradient(45deg, #0d6efd, #0a58ca);
-        color: #fff;
-        font-weight: 600;
-        border: none;
-        border-radius: 25px;
-        padding: 6px 18px;
-        transition: all 0.3s;
-    }
-    .cart-btn:hover {
-        background: linear-gradient(45deg, #0a58ca, #0d6efd);
-        transform: translateY(-2px);
-    }
+  /* Cart Button */
+  .cart-btn {
+    background: linear-gradient(45deg, #0d6efd, #0a58ca);
+    color: #fff;
+    font-weight: 600;
+    border: none;
+    border-radius: 25px;
+    padding: 6px 18px;
+    transition: all 0.3s;
+  }
+  .cart-btn:hover {
+    background: linear-gradient(45deg, #0a58ca, #0d6efd);
+    transform: translateY(-2px);
+  }
 
-    /* Order Button */
-    .order-btn {
-        background: linear-gradient(45deg, #ffc107, #fd7e14);
-        color: #212529;
-        font-weight: 600;
-        border: none;
-        border-radius: 25px;
-        padding: 6px 18px;
-        transition: all 0.3s;
-    }
-    .order-btn:hover {
-        background: linear-gradient(45deg, #fd7e14, #ffc107);
-        transform: translateY(-2px);
-    }
+  /* Order Button */
+  .order-btn {
+    background: linear-gradient(45deg, #ffc107, #fd7e14);
+    color: #212529;
+    font-weight: 600;
+    border: none;
+    border-radius: 25px;
+    padding: 6px 18px;
+    transition: all 0.3s;
+  }
+  .order-btn:hover {
+    background: linear-gradient(45deg, #fd7e14, #ffc107);
+    transform: translateY(-2px);
+  }
 </style>
 
 {% endblock content %}

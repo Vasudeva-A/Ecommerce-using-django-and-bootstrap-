@@ -136,11 +136,16 @@ def CancelOrder(request,id):
 def PlaceOrder(request):
     if request.method == "POST":
         product_id = request.POST.get("product_id")
-        qty = int(request.POST.get("qty", 1))
-        print("DEBUG product_id:", product_id)  # Debug
+        try:
+            qty = int(request.POST.get("qty", 1))
+        except (TypeError, ValueError):
+            qty = 1
+
+        if not product_id:
+            messages.error(request, "No product selected to order.")
+            return redirect("cart_view")
 
         product = get_object_or_404(Products, id=product_id)
-        print("DEBUG product:", product.name)  
 
         order = OrderProducts.objects.create(
             user=request.user,
@@ -149,7 +154,10 @@ def PlaceOrder(request):
             total_price=qty * product.selling_price
         )
 
-        messages.success(request, f"{product.name} ordered successfully!")
+        # Clear the user's cart after a successful order
+        Carts.objects.filter(user=request.user).delete()
+
+        messages.success(request, f"{product.name} ordered successfully! Your cart has been cleared.")
         return redirect("order_view")
     return redirect("cart_view")
 
