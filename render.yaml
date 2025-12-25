@@ -1,0 +1,27 @@
+# Render manifest for automated service + database creation
+# Edit `name`, `envVars` values and `repo` if needed before using.
+
+services:
+  - type: web
+    name: shopping-kart-web
+    env: python
+    region: oregon
+    plan: starter
+    repo: https://github.com/Vasudeva-A/Ecommerce-using-django-and-bootstrap-.git
+    branch: deploy-ready
+    buildCommand: >-
+      python -m pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput
+    startCommand: gunicorn Vasu_project.wsgi --log-file -
+    envVars:
+      - key: DJANGO_DEBUG
+        value: "False"
+      - key: SECRET_KEY
+        # leave value empty here and set securely in Render dashboard
+        value: ""
+      - key: ALLOWED_HOSTS
+        value: "your-service.onrender.com"
+
+databases:
+  - name: shopping-kart-db
+    plan: starter
+    region: oregon
