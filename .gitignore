@@ -1,4 +1,21 @@
-Frontend/__pycache__
+env/
+env\
+ENV/
+venv/
+venv\
+.venv/
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+staticfiles/
+db.sqlite3
+.pytest_cache/
+.coverage
+.vscode/
+*.log
+*.env
+*.egg-info/Frontend/__pycache__
 
 db.sqlite3
 static
