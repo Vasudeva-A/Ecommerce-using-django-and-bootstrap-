@@ -1,97 +1,122 @@
-{% extends "base.html" %}
-{% load static %}
+{% extends "base.html" %} {% load static %} {% block content %}
+<div class="container" style="margin-top: 90px">
+  <!-- Title -->
+  <div class="col-12 text-center mt-4">
+    <h3 class="fw-bold text-dark">{{ request.user }}'s Cart</h3>
+    <hr class="w-50 mx-auto text-dark" />
+  </div>
 
-{% block content %}
-<div class="container" style="margin-top: 90px;">
-    <!-- Title -->
-    <div class="col-12 text-center mt-4">
-        <h3 class="fw-bold text-dark">{{ request.user }}'s Cart</h3>
-        <hr class="w-50 mx-auto text-dark">
-    </div>
+  <!-- Messages handled globally in base.html -->
 
-    <!-- Messages -->
-    {% if messages %}
-      {% for message in messages %}
-        <div class="alert alert-success alert-dismissible fade show" role="alert">
-          {{ message }}
-          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-      {% endfor %}
-    {% endif %}
-
-    <!-- Cart Items -->
-    {% if cart_items %}
-      {% for item in cart_items %}
-      <div class="row mb-4">
-          <div class="col-md-8 mx-auto">
-              <div class="border rounded-3 p-3" style="background: rgba(255,255,255,0.05); backdrop-filter: blur(8px);">
-                  <div class="row g-3 align-items-center">
-                      
-                      <!-- Image -->
-                      <div class="col-4 text-center">
-                          <img src="{{ item.products.product_image.url }}" 
-                               alt="{{ item.products.name }}" 
-                               class="img-fluid rounded shadow-sm" 
-                               style="max-height:140px; object-fit:cover;">
-                      </div>
-
-                      <!-- Details -->
-                      <div class="col-8">
-                          <h5 class="fw-bold text-primary">{{ item.products.name|upper }}</h5>
-                          <p class="mb-1 text-dark"><strong>Qty:</strong> {{ item.product_quantity }}</p>
-                          <p class="mb-2 text-success fw-bold"><span class='fw-bold text-dark'>Price: </span>{{ item.total }}</p>
-
-                          <!-- Quantity Selector -->
-                          <div class="input-group qty-box mb-2" style="width: 150px;">
-                              <button type="button" class="btn btn-sm btn-success minus">–</button>
-                              <input type="number" min="1" max="10" 
-                                     value="{{ item.product_quantity }}" 
-                                     readonly class="form-control form-control-sm text-center qty-input">
-                              <button type="button" class="btn btn-sm btn-success plus">+</button>
-                          </div>
-
-                          <!-- Order / Remove -->
-                          <form method="POST" action="{% url 'place_order' %}" class="d-inline">
-                              {% csrf_token %}
-                              <input type="hidden" name="product_id" value="{{ item.products.id }}">
-                              <input type="hidden" name="qty" class="hiddenQty" value="{{ item.product_quantity }}">
-                              <button type="submit" class="btn btn-sm btn-warning">Order</button>
-                          </form>
-                          <a href="{% url 'cancel_order' item.id %}" class="btn btn-sm btn-danger">Remove</a>
-                      </div>
-
-                  </div>
-              </div>
+  <!-- Cart Items -->
+  {% if cart_items %} {% for item in cart_items %}
+  <div class="row mb-4">
+    <div class="col-md-8 mx-auto">
+      <div
+        class="border rounded-3 p-3"
+        style="
+          background: rgba(255, 255, 255, 0.05);
+          backdrop-filter: blur(8px);
+        "
+      >
+        <div class="row g-3 align-items-center">
+          <!-- Image -->
+          <div class="col-4 text-center">
+            <img
+              src="{{ item.products.product_image.url }}"
+              alt="{{ item.products.name }}"
+              class="img-fluid rounded shadow-sm"
+              style="max-height: 140px; object-fit: cover"
+            />
           </div>
+
+          <!-- Details -->
+          <div class="col-8">
+            <h5 class="fw-bold text-primary">{{ item.products.name|upper }}</h5>
+            <p class="mb-1 text-dark">
+              <strong>Qty:</strong> {{ item.product_quantity }}
+            </p>
+            <p class="mb-2 text-success fw-bold">
+              <span class="fw-bold text-dark">Price: </span>{{ item.total }}
+            </p>
+
+            <!-- Quantity Selector -->
+            <div class="input-group qty-box mb-2" style="width: 150px">
+              <button type="button" class="btn btn-sm btn-success minus">
+                –
+              </button>
+              <input
+                type="number"
+                min="1"
+                max="10"
+                value="{{ item.product_quantity }}"
+                readonly
+                class="form-control form-control-sm text-center qty-input"
+              />
+              <button type="button" class="btn btn-sm btn-success plus">
+                +
+              </button>
+            </div>
+
+            <!-- Order / Remove -->
+            <form
+              method="POST"
+              action="{% url 'place_order' %}"
+              class="d-inline"
+            >
+              {% csrf_token %}
+              <input
+                type="hidden"
+                name="product_id"
+                value="{{ item.products.id }}"
+              />
+              <input
+                type="hidden"
+                name="qty"
+                class="hiddenQty"
+                value="{{ item.product_quantity }}"
+              />
+              <button type="submit" class="btn btn-sm btn-warning">
+                Order
+              </button>
+            </form>
+            <a
+              href="{% url 'cancel_order' item.id %}"
+              class="btn btn-sm btn-danger"
+              >Remove</a
+            >
+          </div>
+        </div>
       </div>
-      {% endfor %}
-    {% else %}
-      <div class="text-center mt-5">
-          <h5 class="text-muted">Your cart is empty 🛒</h5>
-      </div>
-    {% endif %}
+    </div>
+  </div>
+  {% endfor %} {% else %}
+  <div class="text-center mt-5">
+    <h5 class="text-muted">Your cart is empty 🛒</h5>
+  </div>
+  {% endif %}
 </div>
 
 <!-- JS for Qty -->
 <script>
-document.querySelectorAll('.qty-box').forEach(function(box) {
-    let minus = box.querySelector('.minus');
-    let plus = box.querySelector('.plus');
-    let qtyInput = box.querySelector('.qty-input');
-    let hiddenQty = box.parentElement.querySelector('.hiddenQty');
+  document.querySelectorAll(".qty-box").forEach(function (box) {
+    let minus = box.querySelector(".minus");
+    let plus = box.querySelector(".plus");
+    let qtyInput = box.querySelector(".qty-input");
+    let hiddenQty = box.parentElement.querySelector(".hiddenQty");
 
-    minus.onclick = () => { 
-        if(qtyInput.value > 1){ 
-            qtyInput.value--; 
-            hiddenQty.value = qtyInput.value; 
-        } 
+    minus.onclick = () => {
+      if (qtyInput.value > 1) {
+        qtyInput.value--;
+        hiddenQty.value = qtyInput.value;
+      }
     };
-    plus.onclick = () => { 
-        if(qtyInput.value < 10){ 
-            qtyInput.value++; 
-            hiddenQty.value = qtyInput.value; 
-        } 
+    plus.onclick = () => {
+      if (qtyInput.value < 10) {
+        qtyInput.value++;
+        hiddenQty.value = qtyInput.value;
+      }
     };
-});
+  });
 </script>
 {% endblock content %}
