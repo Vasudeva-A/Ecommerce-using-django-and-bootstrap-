@@ -27,8 +27,13 @@ SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-kg$8_9+l&s)ow(7w3ujv+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 
-# Allow Render or other hosts via environment variable (space-separated), defaults for local dev
-ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost 127.0.0.1').split()
+# Allow Render or other hosts via environment variable (comma-separated).
+# If not provided, include localhost and the Render deployment domain so the site runs.
+env_hosts = os.environ.get('ALLOWED_HOSTS')
+if env_hosts:
+    ALLOWED_HOSTS = [h.strip() for h in env_hosts.split(',') if h.strip()]
+else:
+    ALLOWED_HOSTS = ['localhost', '127.0.0.1', 'ecommerce-using-django-and-bootstrap.onrender.com']
 
 
 # Application definition
