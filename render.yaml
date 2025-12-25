@@ -11,7 +11,7 @@ services:
     branch: deploy-ready
     buildCommand: >-
       python -m pip install -r requirements.txt && python manage.py migrate && python manage.py collectstatic --noinput
-    startCommand: gunicorn Vasu_project.wsgi --log-file -
+    startCommand: "gunicorn Vasu_project.wsgi --log-file -"
     envVars:
       - key: DJANGO_DEBUG
         value: "False"
